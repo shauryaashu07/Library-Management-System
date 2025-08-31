@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📚 Library Management System - Dark Mode</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📚 Library Management System</h1>
+    </header>
+
+    <!-- Add Book -->
+    <section class="card">
+      <h2>➕ Add a Book</h2>
+      <div class="form-group">
+        <input type="text" id="bookId" placeholder="Book ID" />
+        <input type="text" id="bookTitle" placeholder="Book Title" />
+        <input type="text" id="bookAuthor" placeholder="Book Author" />
+        <button onclick="addBook()">Add Book</button>
+      </div>
+    </section>
+
+    <!-- Search Book -->
+    <section class="card">
+      <h2>🔍 Search Book</h2>
+      <div class="form-group">
+        <input type="text" id="searchTitle" placeholder="Enter title to search..." />
+        <button onclick="searchBook()">Search</button>
+        <p class="status" id="searchResult"></p>
+      </div>
+    </section>
+
+    <!-- All Books -->
+    <section class="card">
+      <h2>📘 All Books</h2>
+      <ul id="bookList" class="book-list"></ul>
+    </section>
+
+    <!-- Issue / Return -->
+    <section class="card">
+      <h2>📤 Issue / Return</h2>
+      <div class="form-group">
+        <input type="text" id="issueTitle" placeholder="Enter Book Title to Issue" />
+        <div class="btn-group">
+          <button class="issue-btn" onclick="issueBook()">Issue Book</button>
+          <button class="return-btn" onclick="returnBook()">Return Book</button>
+        </div>
+        <p class="status" id="issueStatus"></p>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    let books = [];
+    let issuedQueue = [];
+    let returnedStack = [];
+
+    function addBook() {
+      const id = document.getElementById('bookId').value;
+      const title = document.getElementById('bookTitle').value;
+      const author = document.getElementById('bookAuthor').value;
+
+      if (id && title && author) {
+        books.push({ id, title, author });
+        document.getElementById('bookList').innerHTML += `<li><strong>${title}</strong> by ${author}</li>`;
+        alert("✅ Book added!");
+        document.getElementById('bookId').value = "";
+        document.getElementById('bookTitle').value = "";
+        document.getElementById('bookAuthor').value = "";
+      }
+    }
+
+    function searchBook() {
+      const title = document.getElementById('searchTitle').value;
+      const found = books.find(book => book.title.toLowerCase() === title.toLowerCase());
+      document.getElementById('searchResult').innerText = found 
+        ? `✅ Found: "${found.title}" by ${found.author}`
+        : `❌ Book not found.`;
+    }
+
+    function issueBook() {
+      const title = document.getElementById('issueTitle').value;
+      if (title) {
+        issuedQueue.push(title);
+        document.getElementById('issueStatus').innerText = `✅ Issued: "${title}"`;
+        document.getElementById('issueTitle').value = "";
+      }
+    }
+
+    function returnBook() {
+      if (issuedQueue.length === 0) {
+        document.getElementById('issueStatus').innerText = "⚠️ No issued books.";
+      } else {
+        const returned = issuedQueue.shift();
+        returnedStack.push(returned);
+        document.getElementById('issueStatus').innerText = `📦 Returned: "${returned}"`;
+      }
+    }
+  </script>
+</body>
+</html>
